@@ -504,6 +504,7 @@ const GUIDE_FONT_OPTIONS=['default','Malgun Gothic','Gulim','Dotum','Batang','Gu
 function applyGuideFont(font){const choice=GUIDE_FONT_OPTIONS.includes(font)?font:'default';const stack=choice==='default'?"system-ui,-apple-system,'Noto Sans KR',sans-serif":JSON.stringify(choice)+",'Malgun Gothic',system-ui,sans-serif";document.documentElement.style.setProperty('--guide-user-font',stack);document.getElementById('guideFontSelect').value=choice;document.getElementById('guideFontPreview').style.fontFamily=stack;}
 applyGuideFont(appStore.getItem('meritz_font_choice_v1')||'default');
 document.getElementById('guideFontSelect').addEventListener('change',e=>{applyGuideFont(e.target.value);appStore.setItem('meritz_font_choice_v1',e.target.value);});
+function $(id){return document.getElementById(id)}
 const typeSize=$('guideFontSize'),typeWeight=$('guideFontWeight');
 function applyGlobalTypography(){const size=Math.max(80,Math.min(140,Number(typeSize.value)||100));const weight=['default','400','500','600','700'].includes(typeWeight.value)?typeWeight.value:'default';document.documentElement.style.setProperty('--guide-type-scale',String(size/100));document.documentElement.style.setProperty('--guide-type-weight',weight==='default'?'inherit':weight);$('guideFontSizeValue').textContent=size+'%';$('guideFontPreview').style.fontSize=(16*size/100)+'px';$('guideFontPreview').style.fontWeight=weight==='default'?'normal':weight;}
 typeSize.value=appStore.getItem('meritz_font_size_v1')||'100';typeWeight.value=appStore.getItem('meritz_font_weight_v1')||'default';applyGlobalTypography();
@@ -586,7 +587,7 @@ document.getElementById('photoPreviewClose').addEventListener('click',()=>docume
 let stagedImages=[];
 const key='partner_kakao_templates_v1';let data;try{data=JSON.parse(appStore.getItem(key))||null}catch(e){}if(!Array.isArray(data))data=SMARTNOTE_DEFAULT_TEMPLATES.map(t=>({...t}));for(const t of data){if(!categories.includes(t.category))categories.push(t.category)}
 if(data.some(t=>t.category==='신규 파트너')){data.forEach(t=>{if(t.category==='신규 파트너')t.category='신규 파트너스'});appStore.setItem(key,JSON.stringify(data));}
-let current='전체',editId=null,favoritesOnly=false,lastDeleted=null;function $(id){return document.getElementById(id)}
+let current='전체',editId=null,favoritesOnly=false,lastDeleted=null;
 const saveData=()=>appStore.setItem(key,JSON.stringify(data));
 function moveItem(t,dir){let siblings=data.filter(x=>x.category===t.category).sort((a,b)=>a.order-b.order),i=siblings.findIndex(x=>x.id===t.id),other=siblings[i+dir];if(!other)return;const o=t.order;t.order=other.order;other.order=o;saveData();render()}
 $('undoDelete').onclick=()=>{if(!lastDeleted)return;data.push(lastDeleted);lastDeleted=null;$('undoDelete').hidden=true;saveData();render()};
