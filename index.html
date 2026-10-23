@@ -586,7 +586,8 @@ document.getElementById('photoPreviewClose').addEventListener('click',()=>docume
 let stagedImages=[];
 const key='partner_kakao_templates_v1';let data;try{data=JSON.parse(appStore.getItem(key))||null}catch(e){}if(!Array.isArray(data))data=SMARTNOTE_DEFAULT_TEMPLATES.map(t=>({...t}));for(const t of data){if(!categories.includes(t.category))categories.push(t.category)}
 if(data.some(t=>t.category==='신규 파트너')){data.forEach(t=>{if(t.category==='신규 파트너')t.category='신규 파트너스'});appStore.setItem(key,JSON.stringify(data));}
-let current='전체',editId=null,favoritesOnly=false,lastDeleted=null;const $=id=>document.getElementById(id),saveData=()=>appStore.setItem(key,JSON.stringify(data));
+let current='전체',editId=null,favoritesOnly=false,lastDeleted=null;function $(id){return document.getElementById(id)}
+const saveData=()=>appStore.setItem(key,JSON.stringify(data));
 function moveItem(t,dir){let siblings=data.filter(x=>x.category===t.category).sort((a,b)=>a.order-b.order),i=siblings.findIndex(x=>x.id===t.id),other=siblings[i+dir];if(!other)return;const o=t.order;t.order=other.order;other.order=o;saveData();render()}
 $('undoDelete').onclick=()=>{if(!lastDeleted)return;data.push(lastDeleted);lastDeleted=null;$('undoDelete').hidden=true;saveData();render()};
 // 마우스·터치·펜 공통: 손잡이를 잡고 다른 카드 위로 끌어 순서를 변경
